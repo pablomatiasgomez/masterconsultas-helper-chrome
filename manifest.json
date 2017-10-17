@@ -1,0 +1,42 @@
+﻿{
+    "manifest_version": 2,
+
+    "name": "MasterConsultas Helper",
+    "short_name": "MasterConsultasHelper",
+    "description": "Chrome extension to show some other information and improve the styles of MasterConsultas' site.",
+    "author": "Pablo Matías Gomez",
+    "version": "1.1",
+
+    "icons": {
+        "16": "images/icons/icon16.png",
+        "48": "images/icons/icon48.png",
+        "128": "images/icons/icon128.png"
+    },
+
+    "web_accessible_resources": [
+        "images/*.*",
+        "css/styles.css",
+        "js/functions.js"
+    ],
+
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*.masterconsultas.com.ar/*"
+            ],
+            "all_frames": true,
+
+            "js": [
+                "js/jquery-3.2.1.min.js",
+                "js/Utils.js",
+                "js/MonthlyBillTable.js",
+                "js/functions.js"
+            ],
+
+            "css": [
+                "css/styles.css"
+            ]
+        }
+    ]
+}
+
