@@ -36,22 +36,25 @@ var MonthlyBillTable = function($container, utils) {
 			return `<th id="gridtable_${id}" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: ${width};"><div id="jqgh_gridtable_${id}" class="ui-jqgrid-sortable">${text}</div></th>`;
 		}
 
-		$headerTable.find("th#gridtable_dateOperation").css("width", "83px").find(">div").text("F. Operacion");       // Substracting 50px to each date field..
-		$headerTable.find("th#gridtable_datePresentation").css("width", "83px").find(">div").text("F. Presentacion"); // Substracting 50px to each date field..
+		$headerTable.find("th#gridtable_dateOperation").css("width", "60px").find(">div").text("F. Operacion");       // Substracting 73px to each date field..
+		$headerTable.find("th#gridtable_datePresentation").css("width", "60px").find(">div").text("F. Presentacion"); // Substracting 73px to each date field..
 		$headerTable.find("th#gridtable_detailOperation").css("width", "220px").after(getHeaderHtml("moreDetail", "150px", "Detalle")); // Using 15px of the date fields..
-		$headerTable.find("th#gridtable_share").css("width", "60px").find(">div").text("Cuotas"); // Cantidad de cuotas ... making smaller..
-		$headerTable.find("th#gridtable_totalInPesos").after(getHeaderHtml("totalInPesosLeft", "85px", "Total restante $")); // Using the other 85px of the date fields
+		$headerTable.find("th#gridtable_share").css("width", "40px").find(">div").text("Cuotas"); // Cantidad de cuotas ... making smaller..
+		$headerTable.find("th#gridtable_totalInPesos").after(getHeaderHtml("realTotalInPesos", "70px", "Total $")); // Space for amount
+		$headerTable.find("th#gridtable_totalInPesos").after(getHeaderHtml("totalInPesosLeft", "60px", "Total restante $")); // Space for amount left
 		$headerTable.find("th#gridtable_totalInDollars").css("width", "55px"); // This is just bugged in the original page..
 
-		$table.find("tr.jqgfirstrow td:eq(0)").css("width", "83px"); // Substracting 50px to each date field..
-		$table.find("tr.jqgfirstrow td:eq(1)").css("width", "83px"); // Substracting 50px to each date field..
+		$table.find("tr.jqgfirstrow td:eq(0)").css("width", "60px"); // Substracting 73px to each date field..
+		$table.find("tr.jqgfirstrow td:eq(1)").css("width", "60px"); // Substracting 73px to each date field..
 		$table.find("tr.jqgfirstrow td:eq(2)").css("width", "220px").after('<td role="gridcell" style="height:0px;width:150px;"></td>'); // Using 15px of the date fields..
-		$table.find("tr.jqgfirstrow td:eq(4)").css("width", "60px"); // Cantidad de cuotas ... making smaller..
-		$table.find("tr.jqgfirstrow td:eq(5)").after('<td role="gridcell" style="height:0px;width:85px;"></td>'); // Using the other 85px of the date fields
-		$table.find("tr.jqgfirstrow td:eq(7)").css("width", "55px"); // This is just bugged in the original page..
+		$table.find("tr.jqgfirstrow td:eq(4)").css("width", "40px"); // Cantidad de cuotas ... making smaller..
+		$table.find("tr.jqgfirstrow td:eq(5)").after('<td role="gridcell" style="height:0px;width:70px;"></td>'); // Space for amount
+		$table.find("tr.jqgfirstrow td:eq(5)").after('<td role="gridcell" style="height:0px;width:60px;"></td>'); // Space for amount left
+		$table.find("tr.jqgfirstrow td:eq(8)").css("width", "55px"); // This is just bugged in the original page..
 
 		setTimeout(function() {
 			var total = 0;
+			var totalLeft = 0;
 			var totalSet = false;
 			$table.find("tr").each(function() {
 				var date = $(this).find("td[aria-describedby=gridtable_dateOperation]").text().trim();
@@ -59,22 +62,30 @@ var MonthlyBillTable = function($container, utils) {
 				var amountPerShare = utils.parseValueToFloat($(this).find("td[aria-describedby=gridtable_totalInPesos]").text().trim());
 				var description = $(this).find("td[aria-describedby=gridtable_detailOperation]").text().trim();
 
+				var amountStr = "";
 				var amountLeftStr = "";
 				if (SHARE_REGEX.test(share) && description !== "SU PAGO") {
-					var sharesLeft = share.split("/")[1] - (share.split("/")[0] - 1); // Minus 1 because I want to count the one that I haven't paid yet.
+					var shares = parseInt(share.split("/")[1]);
+					var sharesLeft = shares - (share.split("/")[0] - 1); // Minus 1 because I want to count the one that I haven't paid yet.
+					var amount = shares * amountPerShare;
 					var amountLeft = sharesLeft * amountPerShare;
-					total += amountLeft;
+
+					total += amount;
+					totalLeft += amountLeft;
+					amountStr = utils.parseValueToString(amount);
 					amountLeftStr = utils.parseValueToString(amountLeft);
 				} else if ($(this).hasClass("gridTotal") && description.indexOf("Total de Consumos") !== -1 && totalSet === false) {
 					totalSet = true;
-					amountLeftStr = utils.parseValueToString(total);
+					amountStr = utils.parseValueToString(total);
+					amountLeftStr = utils.parseValueToString(totalLeft);
 				}
 
 				let moreDetail = DETAIL_BY_DATE[date] || '';
 				$(this).find("td[aria-describedby=gridtable_detailOperation]").after('<td role="gridcell" style="text-align:left;" title="' + moreDetail + '">' + moreDetail + '</td>');
+				$(this).find("td[aria-describedby=gridtable_totalInPesos]").after('<td role="gridcell" style="text-align:center;" title="' + amountStr + '">' + amountStr + '</td>');
 				$(this).find("td[aria-describedby=gridtable_totalInPesos]").after('<td role="gridcell" style="text-align:center;" title="' + amountLeftStr + '">' + amountLeftStr + '</td>');
 			});
-		}, 1300); // TODO ?
+		}, 1500); // TODO ?
 	}
 
 	function triggerEvent($obj, eventName) {
@@ -84,8 +95,10 @@ var MonthlyBillTable = function($container, utils) {
 	// Init
 	(function() {
 		setItems();
-		setPageSizeToMax();
-		addDebtAmountColumn();
+		setTimeout(function() {
+			setPageSizeToMax();
+			addDebtAmountColumn();
+		}, 1500); // TODO ?
 	})();
 
 	// Public
