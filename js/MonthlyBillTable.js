@@ -8,7 +8,7 @@ var MonthlyBillTable = function($container, utils) {
 
 	var DETAIL_BY_DATE = {
 	};
-	
+
 	function setItems() {
 		$headerTable = $container.find("table.ui-jqgrid-htable");
 		if ($headerTable.length !== 1) throw "headerTable not found, or more than one found! weird..";
@@ -41,7 +41,7 @@ var MonthlyBillTable = function($container, utils) {
 		$headerTable.find("th#gridtable_detailOperation").css("width", "220px").after(getHeaderHtml("moreDetail", "150px", "Detalle")); // Using 15px of the date fields..
 		$headerTable.find("th#gridtable_share").css("width", "40px").find(">div").text("Cuotas"); // Cantidad de cuotas ... making smaller..
 		$headerTable.find("th#gridtable_totalInPesos").after(getHeaderHtml("realTotalInPesos", "70px", "Total $")); // Space for amount
-		$headerTable.find("th#gridtable_totalInPesos").after(getHeaderHtml("totalInPesosLeft", "60px", "Total restante $")); // Space for amount left
+		$headerTable.find("th#gridtable_totalInPesos").after(getHeaderHtml("totalInPesosLeft", "60px", "Restante $")); // Space for amount left
 		$headerTable.find("th#gridtable_totalInDollars").css("width", "55px"); // This is just bugged in the original page..
 
 		$table.find("tr.jqgfirstrow td:eq(0)").css("width", "60px"); // Substracting 73px to each date field..
