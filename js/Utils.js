@@ -2,8 +2,8 @@ var Utils = function() {
 
 	var parseValueToFloat = function(str) {
 		if (!str) return 0;
-		// return parseFloat(str.replace(" ", "").replace(".", "").replace(",", ".").trim());
-		return parseFloat(str.replace(" ", "").replace(",", "").trim());
+		return parseFloat(str.replace(" ", "").replace(".", "").replace(",", ".").trim());
+		// return parseFloat(str.replace(" ", "").replace(",", "").trim());
 	};
 
 	var parseValueToString = function(value) {
