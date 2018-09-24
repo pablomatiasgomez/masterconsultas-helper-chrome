@@ -65,8 +65,15 @@ var MonthlyBillTable = function($container, utils) {
 				var amountStr = "";
 				var amountLeftStr = "";
 				if (SHARE_REGEX.test(share) && description !== "SU PAGO") {
-					var shares = parseInt(share.split("/")[1]);
-					var sharesLeft = shares - (share.split("/")[0] - 1); // Minus 1 because I want to count the one that I haven't paid yet.
+					var shares;
+					var sharesLeft;
+					if (share.trim() === "0/0") {
+						shares = 1;
+						sharesLeft = 1;
+					} else {
+						shares = parseInt(share.split("/")[1]);
+						sharesLeft = shares - (share.split("/")[0] - 1); // Minus 1 because I want to count the one that I haven't paid yet.
+					}
 					var amount = shares * amountPerShare;
 					var amountLeft = sharesLeft * amountPerShare;
 
@@ -80,12 +87,19 @@ var MonthlyBillTable = function($container, utils) {
 					amountLeftStr = utils.parseValueToString(totalLeft);
 				}
 
-				let moreDetail = DETAIL_BY_DATE[date] || '';
+				let moreDetail = getDetailForDate(date);
 				$(this).find("td[aria-describedby=gridtable_detailOperation]").after('<td role="gridcell" style="text-align:left;" title="' + moreDetail + '">' + moreDetail + '</td>');
 				$(this).find("td[aria-describedby=gridtable_totalInPesos]").after('<td role="gridcell" style="text-align:center;" title="' + amountStr + '">' + amountStr + '</td>');
 				$(this).find("td[aria-describedby=gridtable_totalInPesos]").after('<td role="gridcell" style="text-align:center;" title="' + amountLeftStr + '">' + amountLeftStr + '</td>');
 			});
 		}, 1500); // TODO ?
+	}
+
+	function getDetailForDate(date) {
+		let detail = DETAIL_BY_DATE[date];
+		if (!detail) return '';
+		if (Array.isArray(detail)) return detail.shift();
+		return detail;
 	}
 
 	function triggerEvent($obj, eventName) {

@@ -5,7 +5,7 @@
     "short_name": "MasterConsultasHelper",
     "description": "Chrome extension to show some other information and improve the styles of MasterConsultas' site.",
     "author": "Pablo Matías Gomez",
-    "version": "1.1",
+    "version": "1.1.1",
 
     "icons": {
         "16": "images/icons/icon16.png",
